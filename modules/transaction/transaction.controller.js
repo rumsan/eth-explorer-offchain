@@ -69,7 +69,7 @@ module.exports = class extends AbstractController {
 
   async get(txHash, decodeLogs) {
     let txn = await this.table.findOne({ where: { txHash }, raw: true });
-    txn.logs = [];
+    if (txn) txn.logs = [];
     if (txn && decodeLogs === "true") {
       for (let log of txn.details.logs) {
         let contract = await ContractModel.findOne({
