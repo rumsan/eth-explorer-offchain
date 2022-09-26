@@ -9,6 +9,10 @@ const schema = {
     allowNull: false,
     unique: true,
   },
+  chainId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
   name: DataTypes.TEXT,
   abi: {
     type: DataTypes.JSON,

@@ -39,8 +39,9 @@ module.exports = class extends AbstractController {
   };
 
   async save(txHash, payload) {
-    payload.offChainData = payload.data;
+    payload.offChainData = payload.data || {};
     delete payload.data;
+    payload.chainId = 1; //TODO: remove when multiple chains are introduced
     let rec = await this.table.findOne({ where: { txHash } });
     if (!rec) {
       payload.details = await getTxFromExplorer(txHash);
@@ -69,15 +70,18 @@ module.exports = class extends AbstractController {
 
   async get(txHash, decodeLogs) {
     let txn = await this.table.findOne({ where: { txHash }, raw: true });
-    if (txn) txn.logs = [];
-    if (txn && decodeLogs === "true") {
+    if (!txn) {
+      txn = (await this.save(txHash, {})).get({ plain: true });
+    }
+    txn.decodedLogs = [];
+    if (decodeLogs === "true") {
       for (let log of txn.details.logs) {
         let contract = await ContractModel.findOne({
           where: { address: log.address },
         });
         if (contract?.abi) {
           let dLog = this._decodeLog(log, contract.abi);
-          txn.logs.push(dLog);
+          txn.decodedLogs.push(dLog);
         }
       }
     }

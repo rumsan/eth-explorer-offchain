@@ -21,7 +21,7 @@ module.exports = class extends AbstractController {
       throw new Error("Invalid contract address");
     let rec = await this.table.findOne({ where: { address } });
     if (!rec) {
-      rec = new this.table({ address, abi, name });
+      rec = new this.table({ address, abi, name, chainId: 1 });
     } else {
       if (name) rec.name = name;
       rec.abi = abi;
