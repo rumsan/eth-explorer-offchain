@@ -33,7 +33,11 @@ module.exports = class extends AbstractController {
     let contract = await ContractModel.findOne({
       where: { address: params.address },
     });
-    if (!contract?.abi) return data.result;
+    if (!contract?.abi)
+      return data.result.map((d) => {
+        d.decodedLog = null;
+        return d;
+      });
 
     const iface = new ethers.utils.Interface(contract.abi);
     return data.result.map((d) => {
