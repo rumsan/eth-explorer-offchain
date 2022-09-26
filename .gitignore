@@ -1,0 +1,6 @@
+/node_modules
+/config/
+/play/
+*/uploads
+/package-lock.json
+.env
