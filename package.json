@@ -1,7 +1,7 @@
 {
   "name": "eth-transaction-data",
   "version": "1.0.0",
-  "description": "Add additional data to eth transactions",
+  "description": "Add off-chain data to eth transactions",
   "main": "./index.js",
   "scripts": {
     "lint": "eslint .",
