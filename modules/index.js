@@ -9,14 +9,12 @@ const {
 } = require("@rumsan/user");
 const Transaction = require("./transaction");
 const Contract = require("./contract");
-const ChainLog = require("./chainlog");
 const Proxy = require("./proxy");
 
 let Routes = {
   Proxy: new Proxy(),
   Contract: new Contract(),
   Transaction: new Transaction(),
-  ChainLog: new ChainLog(),
   Auth: new AuthRouter(),
   Role: new RoleRouter(),
   User: new UserRouter(),
