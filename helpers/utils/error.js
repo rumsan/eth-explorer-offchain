@@ -1,90 +1,85 @@
-const config = require("config");
-
-class RSError extends Error {
-  constructor(message, name, httpCode) {
-    super();
-    this.message = message;
-    this.data = {
-      group: config.get("app.name"),
-      type: "rserror",
-      message,
-      name: name || "none",
-      httpCode: httpCode || 500,
-    };
-    this.status = httpCode || 500;
-    this.className = this.constructor.name;
-    this.stack = new Error(message).stack;
-  }
-}
-
 const ERR = {
-  DEFAULT: new RSError("Error Occured", "none", 500),
-  AUTH_FAIL: new RSError(
-    "Authentication failed. Please try again.",
-    "auth_fail",
-    401
-  ),
-  UNAUTHORIZED: new RSError(
-    "You don't have access to do that.",
-    "unauthorized",
-    401
-  ),
-  PWD_SAME: new RSError("Please send different new password", "pwd_same", 400),
-  PWD_NOTMATCH: new RSError(
-    "Old password does not match.",
-    "pwd_notmatch",
-    400
-  ),
-  TOKEN_REQ: new RSError("Must send access_token", "token_req", 400),
-  USER_NOEXISTS: new RSError("User does not exists.", "user_noexists", 400),
-  USER_EXISTS: new RSError("User already exists.", "user_noexists", 400),
-
-  PHONE_EXISTS: new RSError(
-    "Phone Number already exists.",
-    "phone_exists",
-    400
-  ),
-  EMAIL_EXISTS: new RSError("Email already exists.", "email_exists", 400),
-  INVALID_COORDINATES: new RSError(
-    "Invalid Coordinates. Longitude should be in betweeen -180 and 180. Latitude should be in between -90 and 90",
-    "invalid_coordinates",
-    400
-  ),
-  ORG_PHONE_EXISTS: new RSError(
-    "Phone Number is already registered",
-    "org_phone_exists",
-    400
-  ),
-  ORG_EMAIL_EXISTS: new RSError(
-    "Email already registered.",
-    "org_email_exists",
-    400
-  ),
-  EMAIL_NOEXISTS: new RSError("Email does not exists.", "email_noexists", 400),
-  PHONE_NOEXISTS: new RSError("Phone does not exists.", "phone_noexists", 400),
-  OVERORDERED: new RSError(
-    "Quantity selected is higher than availability of product",
-    "overordered",
-    400
-  ),
-  WALLET_MISMATCH: new RSError("Wallet mismatch", "wallet_mismatch", 400),
-  WALLET_EXISTS: new RSError(
-    "Wallet already registered",
-    "wallet_already_registered",
-    401
-  ),
-  WALLET_NOT_FOUND: new RSError("Wallet not found", "wallet_not_found", 404),
-
-  AIRDROP_STATUS_PENDING: new RSError(
-    "This has already been airdropped and the status is PENDING to be claimed."
-  ),
-  AIRDROP_EXPIRED: new RSError(
-    "This airdrop has been expired. Please contact the owner."
-  ),
-  // DEFAULT: new RSError('', '', 400),
+  DEFAULT: ["Error Occured", "none", 500],
+  APP_SECRET: ["AppSecret is undefined.", "app_secret", 500],
+  APP_SECRET32: ["AppSecret must be 32 characters long.", "app_secret32", 500],
+  AUTH_EXISTS: [
+    "User authentication service already exists.",
+    "auth_exists",
+    400,
+  ],
+  AUTH_NOEXISTS: ["User does not exist.", "auth_noexists", 401],
+  AUTH_REQ: [
+    'Must send auth data. eg: {type:"email","username":"santosh@rumsan.com"}',
+    "auth_req",
+    400,
+  ],
+  DB_UNDEFINED: ["db is undefined.", "db_undefined", 500],
+  EMAIL_REQ: ["Email is required.", "email_req", 400],
+  NAME_REQ: ["Name is required.", "name_req", 400],
+  NOT_IMPLEMENTED: [
+    "This function is not implemented yet. Please over-write it yourself",
+    "not_implemented",
+    400,
+  ],
+  LOGIN_INVALID: ["Invalid username or password", "login_invalid", 401],
+  LOGIN_REQ: ["Username and password are required.", "password_req", 400],
+  PASSWORD_FORMAT: [
+    "password must contain salt and hash.",
+    "password_format",
+    400,
+  ],
+  MODEL_REQ: ["Must send valid sequelize model", "model_req", 500],
+  PASSWORD_REQ: ["Password is required.", "password_req", 400],
+  PWD_NOTMATCH: ["Password does not match.", "pwd_nomatch", 400],
+  PHONE_REQ: ["Phone is required", "phone_req", 400],
+  ROLE_NAME_REQ: ["Role name is required", "role_name_req", 400],
+  ROLE_NOEXISTS: ["Role does not exist", "role_noexists", 400],
+  ROLE_ISSYSTEM: ["Cannot modify system roles", "role_issystem", 400],
+  TOKEN_INVALID: [
+    "Token is invalid or expired. Please get a new one.",
+    "token_invalid",
+    401,
+  ],
+  USER_NOEXISTS: ["User does not exists", "user_noexists", 400],
+  USERID_REQ: ["user_id is required", "userid_req", 400],
+  USERNAME_EXISTS: ["Username already exists.", "username_exists", 400],
+  USERNAME_REQ: ["Username is required.", "username_req", 400],
+  WALLET_REGISTER_FAILED: [
+    "Wallet registration failed",
+    "wallet_register_failed",
+    400,
+  ],
 };
 
-const throwError = (err) => {
-  throw err;
+const { RSError } = require("@rumsan/core/utils");
+
+module.exports = {
+  ERRNI() {
+    throw new RSError(
+      "Not Implemented. Please overwrite this function.",
+      "not_implemented",
+      500,
+      "eth-explorer-proxy"
+    );
+  },
+  ERR,
+  throwError(err) {
+    if (!err)
+      throw new Error(
+        "RSError has not been defined. Please define it in Error constants file."
+      );
+    if (typeof err == "string")
+      throw new RSError(err, "unknown", 500, "eth-explorer-proxy");
+    const [msg, name, httpCode] = err;
+    throw new RSError(msg, name, httpCode, "eth-explorer-proxy");
+  },
+  checkCondition(condition, err) {
+    if (!condition) {
+      if (!err) throw new RSError("checkCondition failed", "check-failed");
+      if (typeof err == "string")
+        throw new RSError(err, "unknown", 500, "eth-explorer-proxy");
+      const [msg, name, httpCode] = err;
+      throw new RSError(msg, name, httpCode, "eth-explorer-proxy");
+    }
+  },
 };
-module.exports = { Error: RSError, ERR, throwError };

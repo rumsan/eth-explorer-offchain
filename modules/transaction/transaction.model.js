@@ -13,17 +13,14 @@ const schema = {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
-  offChainData: {
+  chainData: {
     type: DataTypes.JSON,
     allowNull: false,
   },
-  details: {
-    type: DataTypes.JSON,
-    allowNull: false,
-  },
-  wallet: {
-    type: DataTypes.CITEXT,
-  },
+  label: DataTypes.STRING(255),
+  tags: DataTypes.ARRAY(DataTypes.STRING),
+  extras: DataTypes.JSON,
+  author: DataTypes.CITEXT,
 };
 module.exports = class TxModel extends AbstractModel {
   schema = schema;

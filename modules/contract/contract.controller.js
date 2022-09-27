@@ -10,9 +10,25 @@ module.exports = class extends AbstractController {
 
   registrations = {
     save: (req) => this.save(req.params.address, req.payload),
+    patch: (req) => this.patch(req.params.address, req.payload),
     get: (req) => this.get(req.params.address),
     list: (req) => this.list(),
   };
+
+  async patch(address, payload) {
+    let rec = await this.table.findOne({ where: { address } });
+    if (!rec) throw new Error("Contract is not cached. Please cache first.");
+
+    rec.tags = rec.tags || [];
+    if (payload.tags) {
+      rec.tags = [...new Set([...payload.tags, ...rec.tags])];
+    }
+    if (payload.removeTags) {
+      rec.tags = rec.tags.filter((item) => !payload.removeTags.includes(item));
+    }
+
+    return rec.save();
+  }
 
   async save(address, payload) {
     let { name, contractName, abi } = payload;

@@ -18,6 +18,8 @@ const schema = {
     type: DataTypes.JSON,
     allowNull: false,
   },
+  tags: DataTypes.ARRAY(DataTypes.STRING),
+  author: DataTypes.CITEXT,
 };
 module.exports = class TxModel extends AbstractModel {
   schema = schema;

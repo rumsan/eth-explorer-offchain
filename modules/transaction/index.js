@@ -11,9 +11,14 @@ module.exports = class extends AbstractRouter {
   }
   routes = {
     save: {
-      method: "POST",
+      method: "PUT",
       path: "/{txHash}",
       description: "Add new transaction",
+    },
+    patch: {
+      method: "PATCH",
+      path: "/{txHash}",
+      description: "Patch offchain data",
     },
     list: {
       method: "GET",

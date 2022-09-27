@@ -17,6 +17,16 @@ const validators = {
       abi: Joi.array().required(),
     }),
   },
+  patch: {
+    params: Joi.object({
+      address: Joi.string().required(),
+    }),
+    payload: Joi.object({
+      name: Joi.string().optional(),
+      tags: Joi.array().optional(),
+      removeTags: Joi.array().optional(),
+    }),
+  },
 };
 
 module.exports = class extends AbstractValidator {

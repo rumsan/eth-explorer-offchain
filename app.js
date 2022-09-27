@@ -13,7 +13,7 @@ class App {
    */
   constructor() {
     this.feats = {};
-    this.apiPath = "/api/v1";
+    this.apiPath = "";
   }
 
   connectServer(server) {
@@ -118,11 +118,16 @@ class App {
       const responseFormat =
         request.headers["rs-response-format"] || request.query?.format;
 
-      if (responseFormat === "raw") return result;
-      return {
-        success: true,
-        data: result,
-      };
+      if (responseFormat === "rumsan")
+        return {
+          success: true,
+          data: result,
+        };
+      //specific to pass explorer error
+      if (result.resType === "explorer_error") {
+        return h.response(result.data).code(result.statusCode);
+      }
+      return result;
     } catch (error) {
       logger.error(`main error captured: ${error}`);
 

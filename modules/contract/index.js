@@ -21,9 +21,14 @@ module.exports = class extends AbstractRouter {
       description: "Get contract details",
     },
     save: {
-      method: "POST",
+      method: "PUT",
       path: "/{address}",
       description: "Add new contract abi",
+    },
+    patch: {
+      method: "PATCH",
+      path: "/{address}",
+      description: "Patch contract info",
     },
   };
 };

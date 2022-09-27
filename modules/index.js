@@ -10,8 +10,10 @@ const {
 const Transaction = require("./transaction");
 const Contract = require("./contract");
 const ChainLog = require("./chainlog");
+const Proxy = require("./proxy");
 
 let Routes = {
+  Proxy: new Proxy(),
   Contract: new Contract(),
   Transaction: new Transaction(),
   ChainLog: new ChainLog(),
