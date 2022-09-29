@@ -1,10 +1,10 @@
-FROM node:14.17.0-alpine3.13
-RUN apk add --update bash git
+FROM node:16.13.2-alpine3.15
+#RUN apk add --update bash git
 #set working directory
 WORKDIR /usr/src/app 
 COPY . .
 #install packages
 RUN yarn
 #expose application working port
-# EXPOSE 3601
+EXPOSE 4400
 CMD ["yarn","production"]
